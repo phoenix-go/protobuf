@@ -1175,6 +1175,9 @@ func (g *Generator) GenerateAllFiles() {
 			})
 		}
 	}
+
+	// TODO: register type
+	GetRegister().ResponseFile()
 }
 
 // Run all the plugins associated with the file.
