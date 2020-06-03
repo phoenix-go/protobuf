@@ -3019,6 +3019,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.P()
 	g.generateOneofFuncs(mc, topLevelFields)
 	g.P()
+	if g.generateStructCommentCommand(mc) {
+		g.P()
+	}
 
 	var oneofTypes []string
 	for _, f := range topLevelFields {
