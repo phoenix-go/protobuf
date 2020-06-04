@@ -104,6 +104,11 @@ func (g *Generator) generatorMethod(mc *msgCtx, lx *lexer) {
 
 	lx.omitByCond('"')
 
+	// Warning: 对消息进行特殊处理
+	if desc.name == "MsgID" && len(desc.outs) != 0 {
+		GetRegister().Register(desc.outs[0].v, mc.goName)
+	}
+
 	// 打印对应的函数处理方法
 	g.printCommentCmdMethod(mc, desc)
 }
@@ -138,7 +143,12 @@ func (g *Generator) printCommentCmdMethod(mc *msgCtx, desc *methodDescribe) {
 	g.p("return ")
 
 	for i, out := range desc.outs {
-		g.p(out.v)
+		if IsSupportBasicTypeInGo(out.t) {
+			g.p(out.v)
+		} else {
+			g.p(out.t, "(", out.v, ")")
+		}
+
 		if i != len(desc.outs)-1 {
 			g.p(", ")
 		}
@@ -269,6 +279,17 @@ func (lx *lexer) omitByCond(rs ...rune) {
 		}
 	}
 	lx.truncate()
+}
+
+var supportBasicTypeInGo = []string{"float64", "float32", "int32", "int64", "uint32", "uint64", "bool", "string", "[]byte"}
+
+func IsSupportBasicTypeInGo(t string) bool {
+	for _, str := range supportBasicTypeInGo {
+		if str == t {
+			return true
+		}
+	}
+	return false
 }
 
 func (lx *lexer) omitSpace() {
