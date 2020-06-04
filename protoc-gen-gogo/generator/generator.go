@@ -1177,7 +1177,11 @@ func (g *Generator) GenerateAllFiles() {
 	}
 
 	// TODO: register type
-	GetRegister().ResponseFile()
+	if len(g.allFiles) != 0 {
+		if responseFile := GetRegister().ResponseFile(*g.allFiles[0].Package); responseFile != nil {
+			g.Response.File = append(g.Response.File, responseFile)
+		}
+	}
 }
 
 // Run all the plugins associated with the file.

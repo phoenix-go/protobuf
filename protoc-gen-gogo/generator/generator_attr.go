@@ -104,6 +104,11 @@ func (g *Generator) generatorMethod(mc *msgCtx, lx *lexer) {
 
 	lx.omitByCond('"')
 
+	// Warning: 对消息进行特殊处理
+	if desc.name == "MsgID" && len(desc.outs) != 0 {
+		GetRegister().Register(desc.outs[0].v, mc.goName)
+	}
+
 	// 打印对应的函数处理方法
 	g.printCommentCmdMethod(mc, desc)
 }
